@@ -10,11 +10,15 @@ neut_colours = c("Pfizer Elderly E" = "lightgreen",
                  "Pfizer maternal A" = "darkblue",
                  "AzSanofi infants Phase2b" = "purple",
                  "AzSanofi infants MELODY" = "mediumpurple1",
-                 "J&J elderly JJ" = "magenta")
+                 "J&J elderly JJ" = "magenta",
+                 "Novavax infants" = "goldenrod1",
+                 "Novavax mothers" = "goldenrod3",
+                 "Novavax elderly" = "goldenrod4")
 
 immunisation_colours = c("Ad26.RSV.preF"="magenta",
                          "Pfizer"="green4",
-                         "Az-S" = "purple")
+                         "Az-S" = "purple",
+                         "Novavax" = "goldenrod")
 
 variant_linestyles = c("combined A/B" = "-",
                       "RSVA" = "--",
