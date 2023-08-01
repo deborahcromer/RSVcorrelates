@@ -7,7 +7,7 @@ rsv_neuts = rsv_data %>%
   filter(!is.na(NabVal)) %>%
   data.table::dcast(Trial+Group+Type+Drug+TimeRelTo+Variant+Time~Treatment, value.var = c("NabVal")) %>%
   right_join(filter(rsv_data[,c("Trial","Group","Type","Drug","Time","TimeRelTo","Variant","Treatment","NabVal")],Time==0, !is.na(NabVal), Treatment=="placebo"), 
-        by = c("Trial","Group","Type","Drug","TimeRelTo","Variant"),by.y = c("Trial","Group","Type","Drug","TimeRelTo","Variant") ) %>%
+        by = c("Trial","Group","Type","Drug","TimeRelTo","Variant")) %>%
   mutate(time = Time.x,
          neut = drug,
          neutL = log10(neut),
@@ -38,4 +38,5 @@ rsv_summary_eff = rsv_summary_data %>%
   select(-c("neut", "neutL", "norm_neut", "norm_neutL"))
 
 rsv_summary_full = full_join(rsv_summary_neuts, rsv_summary_eff,
-                             by=c("Immunisation", "agegp"))
+                             by=c("Immunisation", "agegp"),
+                             relationship = "many-to-many")
