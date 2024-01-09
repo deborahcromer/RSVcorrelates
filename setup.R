@@ -13,7 +13,8 @@ neut_colours = c("Pfizer Elderly E" = "lightgreen",
                  "J&J elderly JJ" = "magenta",
                  "Novavax infants" = "goldenrod1",
                  "Novavax mothers" = "goldenrod3",
-                 "Novavax elderly" = "goldenrod4")
+                 "Novavax elderly" = "goldenrod4",
+                 "Moderna elderly" = "tomato")
 
 immunisation_colours = c("Ad26.RSV.preF"="magenta",
                          "Pfizer"="green4",

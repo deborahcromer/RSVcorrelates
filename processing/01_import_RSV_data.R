@@ -1,20 +1,20 @@
 rsv_data = read_xlsx(path="./raw-data/RSV Data.xlsx", sheet = "Sheet1", range = "A1:M1000") %>%
-   as.data.table() %>%
-   filter(!is.na(Trial)) %>%
-   select(-c(normalisedNab)) 
- 
+  as.data.table() %>%
+  filter(!is.na(Trial)) %>%
+  select(-c(normalisedNab)) 
+
 rsv_neuts = rsv_data %>%
-   filter(!is.na(NabVal)) %>%
-   data.table::dcast(Trial+Group+Type+Drug+TimeRelTo+Variant+Time~Treatment, value.var = c("NabVal")) %>%
-   right_join(filter(rsv_data[,c("Trial","Group","Type","Drug","Time","TimeRelTo","Variant","Treatment","NabVal")],Time==0, !is.na(NabVal), Treatment=="placebo"), 
-         by = c("Trial","Group","Type","Drug","TimeRelTo","Variant")) %>%
-   mutate(time = Time.x,
-          neut = drug,
-          neutL = log10(neut),
-          norm_neut = drug/NabVal, 
-          norm_neutL = log10(norm_neut)
-          ) %>%
-   select(-c(Treatment, placebo, NabVal, drug, Time.y, Time.x))
+  filter(!is.na(NabVal)) %>%
+  data.table::dcast(Trial+Group+Type+Drug+TimeRelTo+Variant+Time~Treatment, value.var = c("NabVal")) %>%
+  right_join(filter(rsv_data[,c("Trial","Group","Type","Drug","Time","TimeRelTo","Variant","Treatment","NabVal")],Time==0, !is.na(NabVal), Treatment=="placebo"), 
+        by = c("Trial","Group","Type","Drug","TimeRelTo","Variant")) %>%
+  mutate(time = Time.x,
+         neut = drug,
+         neutL = log10(neut),
+         norm_neut = drug/NabVal, 
+         norm_neutL = log10(norm_neut)
+         ) %>%
+  select(-c(Treatment, placebo, NabVal, drug, Time.y, Time.x))
 
 rsv_summary_data =  read_xlsx(path="./raw-data/RSV Data.xlsx", sheet = "Sheet2", range = "A1:K1000") %>%
   as.data.table() %>%
@@ -39,9 +39,4 @@ rsv_summary_eff = rsv_summary_data %>%
 
 rsv_summary_full = full_join(rsv_summary_neuts, rsv_summary_eff,
                              by=c("Immunisation", "agegp"),
-                             relationship = "many-to-many") %>%
-  filter(!(Variant.y != "Combined" & Variant.y != Variant.x)) %>% # remove matches between unmatched RSVA / RSVB
-  rename(ab_variant = Variant.x,
-         eff_variant = Variant.y,
-         ab_study_name = Study.x,
-         eff_study_name = Study.y)
+                             relationship = "many-to-many")
