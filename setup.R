@@ -19,7 +19,9 @@ immunisation_colours = c("Ad26.RSV.preF"="magenta",
                          "Pfizer"="green4",
                          "Az-S" = "purple",
                          "Novavax" = "goldenrod",
-                         "Moderna" = "red")
+                         "GSK" = "cyan",
+                         "Moderna" = "tomato",
+                         "Bavarian Nordic" = "pink" )
 
 variant_linestyles = c("combined A/B" = "-",
                       "RSVA" = "--",
