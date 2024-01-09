@@ -12,7 +12,7 @@ neut_plot = ggplot(rsv_neuts, aes(x=time, y=norm_neut, colour = paste(Trial,Grou
 
 ggsave("./output/plots/01_NormalisedNeuts.pdf", width = w*.7, height = h*.7)
 
-neut_eff_plot = ggplot(filter(rsv_summary_full, Variant.x=="Combined"), aes(x=norm_neut, y=VE, colour=Immunisation, linetype = agegp))+
+neut_eff_plot = ggplot(filter(rsv_summary_full, ab_variant=="Combined"), aes(x=norm_neut, y=VE, colour=Immunisation, linetype = agegp))+
   geom_point()+
   geom_errorbar(aes(ymin = lowerVE, ymax=upperVE))+
   theme_bw() +

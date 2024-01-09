@@ -18,7 +18,8 @@ neut_colours = c("Pfizer Elderly E" = "lightgreen",
 immunisation_colours = c("Ad26.RSV.preF"="magenta",
                          "Pfizer"="green4",
                          "Az-S" = "purple",
-                         "Novavax" = "goldenrod")
+                         "Novavax" = "goldenrod",
+                         "Moderna" = "red")
 
 variant_linestyles = c("combined A/B" = "-",
                       "RSVA" = "--",
