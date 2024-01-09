@@ -4,6 +4,9 @@ library(dplyr)
 library(data.table)
 library(ggplot2)
 
+
+RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
+
 neut_colours = c("Pfizer Elderly E" = "lightgreen",
                  "Pfizer infants B" = "seagreen",
                  "Pfizer infants D" = "darkgreen",         
@@ -18,7 +21,7 @@ neut_colours = c("Pfizer Elderly E" = "lightgreen",
 
 immunisation_colours = c("Ad26.RSV.preF"="magenta",
                          "Pfizer"="green4",
-                         "Az-S" = "purple",
+                         "AzSanofi" = "purple",
                          "Novavax" = "goldenrod",
                          "GSK" = "cyan",
                          "Moderna" = "tomato",
@@ -32,4 +35,7 @@ w = 8
 h=6
 
 outcome_levels = c("Symptomatic","Moderate","Severe")
-age_levels = c("Infant", "Elderly")
+age_levels = c("infants", "elderly","maternal")
+
+age_linestyles = c("solid","dashed","dotted")
+names(age_linestyles) = age_levels

@@ -1,16 +1,14 @@
 
-neut_plot = ggplot(rsv_neuts, aes(x=time, y=norm_neut, colour = paste(Trial,Group)))+
-  geom_point()+
-  geom_line(aes(linetype = Variant))+
+neut_plot = ggplot(rsv_neuts, aes(x=time, y=norm_neut, group = paste0(Variant,Trial,Group,Agegroup), colour = paste(Trial,Group)))+
+  geom_point(aes(shape = Immunisation))+
+  geom_line(aes(linetype = agegp))+
   theme_bw() +
   scale_colour_manual(name = "Trial / Group", values = neut_colours)+
   scale_y_log10()+
+  scale_linetype_manual(name = "Age-group", values = age_linestyles) + 
   labs(x="Time (days)", y = "Normalised Neuts (ratio of placebo at t=0)", title = "Neutralisation Titre over time") 
-  
-#+
- # scale_linetype_manual(values = variant_linestyles)
 
-ggsave("./output/plots/01_NormalisedNeuts.pdf", width = w*.7, height = h*.7)
+ggsave("./output/plots/01_NormalisedNeuts.pdf", width = w, height = h)
 
 neut_eff_plot = ggplot(filter(rsv_summary_full, ab_variant=="Combined"), aes(x=norm_neut, y=VE, colour=Immunisation, linetype = agegp))+
   geom_point()+
@@ -19,9 +17,9 @@ neut_eff_plot = ggplot(filter(rsv_summary_full, ab_variant=="Combined"), aes(x=n
   scale_colour_manual(name = "Immunisation Type", values = immunisation_colours)+
   scale_x_log10()+
   labs(x="Normalised Neuts (ratio of placebo at t=0)", y = "Efficacy", title = "Correlation between Efficay and Neutralisation Titres") +
-  scale_linetype(name = "Age-group") + 
+  scale_linetype_manual(name = "Age-group", values = age_linestyles) + 
   facet_grid(~outcome) +
   coord_cartesian(y=c(-10,100))
   
-ggsave("./output/plots/02_NormalisedNeuts_vs_Efficacy.pdf", width = w*1, height = h*.7)
+ggsave("./output/plots/02_NormalisedNeuts_vs_Efficacy.pdf", width = w, height = h)
   
