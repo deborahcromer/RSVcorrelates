@@ -1,13 +1,13 @@
-rsv_data = read_xlsx(path=RSV_data_file, sheet = "Sheet1", range = "A1:M1000") %>%
+rsv_data = read_xlsx(path=RSV_data_file, sheet = antibody_sheet, range = antibody_range) %>%
   as.data.table() %>%
   filter(!is.na(Trial)) %>%
   select(-c(normalisedNab)) 
 
 rsv_neuts = rsv_data %>%
   filter(!is.na(NabVal)) %>%
-  data.table::dcast(Trial+Immunisation+Agegroup+Group+Type+Drug+TimeRelTo+Variant+Time~Treatment, value.var = c("NabVal")) %>%
-  right_join(filter(rsv_data[,c("Trial","Group","Immunisation","Agegroup","Type","Drug","Time","TimeRelTo","Variant","Treatment","NabVal")],Time==0, !is.na(NabVal), Treatment=="placebo"), 
-        by = c("Trial","Immunisation","Agegroup","Group","Type","Drug","TimeRelTo","Variant")) %>%
+  data.table::dcast(paper_id+Trial+Immunisation+Agegroup+Group+Type+Drug+TimeRelTo+Variant+Time~Treatment, value.var = c("NabVal")) %>%
+  right_join(filter(rsv_data[,c("paper_id","Trial","Group","Immunisation","Agegroup","Type","Drug","Time","TimeRelTo","Variant","Treatment","NabVal")],Time==0, !is.na(NabVal), Treatment=="placebo"), 
+        by = c("paper_id","Trial","Immunisation","Agegroup","Group","Type","Drug","TimeRelTo","Variant")) %>%
   mutate(time = Time.x,
          neut = drug,
          neutL = log10(neut),
@@ -16,7 +16,7 @@ rsv_neuts = rsv_data %>%
          agegp = factor(Agegroup, levels = age_levels)) %>%
   select(-c(Treatment, placebo, NabVal, drug, Time.y, Time.x))
 
-rsv_summary_data =  read_xlsx(path=RSV_data_file, sheet = "Sheet2", range = "A1:K1000") %>%
+rsv_summary_data =  read_xlsx(path=RSV_data_file, sheet = ab_eff_sheet, range = ab_eff_range) %>%
   as.data.table() %>%
   filter(!is.na(Immunisation)) %>%
   mutate(

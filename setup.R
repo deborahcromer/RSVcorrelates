@@ -6,18 +6,28 @@ library(ggplot2)
 
 
 RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
+antibody_sheet = "Antibodies"
+antibody_range = "A1:P1000"
+ab_eff_sheet = "ab_eff"
+ab_eff_range = "A1:M1000"
 
-neut_colours = c("Pfizer Elderly E" = "lightgreen",
-                 "Pfizer infants B" = "seagreen",
-                 "Pfizer infants D" = "darkgreen",         
-                 "Pfizer maternal A" = "darkblue",
+neut_colours = c("Pfizer Elderly RSVA/B" = "lightgreen",
+                 "Pfizer infants RSVA/B" = "seagreen",
+                 "Pfizer infants combined" = "darkgreen",         
+                 "Pfizer maternal combined" = "darkblue",
                  "AzSanofi infants Phase2b" = "purple",
                  "AzSanofi infants MELODY" = "mediumpurple1",
                  "J&J elderly JJ" = "magenta",
-                 "Novavax infants" = "goldenrod1",
-                 "Novavax mothers" = "goldenrod3",
-                 "Novavax elderly" = "goldenrod4",
-                 "Moderna elderly" = "tomato")
+                 "Novavax infants" = "gold1",
+                 "Novavax mothers" = "gold3",
+                 "Novavax women" = "goldenrod3",
+                 "Novavax elderly" = "orange4",
+                 "Moderna elderly" = "tomato",
+                 "BavarianNordic low dose (only)" = "pink",
+                 "BavarianNordic low dose (+later dose)" = "pink2",
+                 "BavarianNordic high dose (only)" = "pink3",
+                 "BavarianNordic high dose (+later dose)" = "pink4" 
+                   )
 
 immunisation_colours = c("Ad26.RSV.preF"="magenta",
                          "Pfizer"="green4",
@@ -30,12 +40,23 @@ immunisation_colours = c("Ad26.RSV.preF"="magenta",
 variant_linestyles = c("combined A/B" = "-",
                       "RSVA" = "--",
                       "RSVB"=".")
+manufacturer_shapes = c(20:25,13)
+names(manufacturer_shapes) = c("AzSanofi","J&J","Moderna","Novavax","Pfizer","BavarianNordic")
 
 w = 8
 h=6
+lw = 1.5
+ps = 4
 
 outcome_levels = c("Symptomatic","Moderate","Severe")
 age_levels = c("infants", "elderly","maternal")
 
 age_linestyles = c("solid","dashed","dotted")
 names(age_linestyles) = age_levels
+
+rsv_plot_theme = theme_bw() + 
+  theme(text = element_text(size=18), 
+        legend.title = element_text(size=18),
+        legend.text = element_text(size=12),
+        legend.key.size = unit(15, units = "pt"),
+        legend.spacing = unit(4,units="pt"))
