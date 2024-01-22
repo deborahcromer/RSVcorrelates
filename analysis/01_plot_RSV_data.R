@@ -7,7 +7,7 @@ neut_plot = ggplot(rsv_neuts, aes(x=time, y=norm_neut, group = paste0(Variant,Tr
   scale_fill_manual(name = "Trial / Group", values = neut_colours)+
   scale_y_log10()+
   scale_linetype_manual(name = "Age-group", values = age_linestyles) + 
-  scale_shape_manual(values = manufacturer_shapes)
+  scale_shape_manual(values = manufacturer_shapes) +
   labs(x="Time (days)", y = "Normalised Neuts (ratio of placebo at t=0)", title = "Neutralisation Titre over time") +
   rsv_plot_theme
 ggsave("./output/plots/01_NormalisedNeuts.pdf", width = w, height = h)
@@ -19,8 +19,8 @@ ggsave("./output/plots/01a_NormalisedNeuts_Facetted.pdf", width = w*1.5, height 
 
 
 neut_eff_plot = ggplot(filter(rsv_summary_full, ab_variant=="Combined", !is.na(outcome)), aes(x=norm_neut, y=VE, colour=Immunisation, linetype = agegp))+
-  geom_point()+
-  geom_errorbar(aes(ymin = lowerVE, ymax=upperVE))+
+  geom_point(size = ps)+
+  geom_errorbar(aes(ymin = lowerVE, ymax=upperVE),linewidth = lw)+
   theme_bw() +
   scale_colour_manual(name = "Immunisation Type", values = immunisation_colours)+
   scale_x_log10()+
@@ -37,10 +37,10 @@ ggsave("./output/plots/02a_NormalisedNeuts_vs_Efficacy_Restricted.pdf", width = 
 
 
 neut_eff_plot_facet = neut_eff_plot +
-  facet_grid(factor(ifelse(agegp=="infants", "Infants","Adults"), levels = c("Infants", "Adults"))~outcome)
-ggsave("./output/plots/02b_NormalisedNeuts_vs_Efficacy_Facetted.pdf", width = w*1.3, height = h*1.5)
+  facet_grid(factor(ifelse(agegp=="infants", "Infants","Adults"), levels = c("Infants", "Adults"))~outcome, switch = "y")
+ggsave("./output/plots/02b_NormalisedNeuts_vs_Efficacy_Facetted.pdf", width = w*1.3, height = h*1.2)
 
 neut_eff_plot_facet_restricted = neut_eff_plot_facet +
   coord_cartesian(xlim = c(1,15))
-ggsave("./output/plots/02c_NormalisedNeuts_vs_Efficacy_Facetted_Restricted.pdf", width = w*1.3, height = h*1.5)
+ggsave("./output/plots/02c_NormalisedNeuts_vs_Efficacy_Facetted_Restricted.pdf", width = w*1.3, height = h*1.2)
 

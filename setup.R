@@ -56,7 +56,10 @@ names(age_linestyles) = age_levels
 
 rsv_plot_theme = theme_bw() + 
   theme(text = element_text(size=18), 
-        legend.title = element_text(size=18),
-        legend.text = element_text(size=12),
-        legend.key.size = unit(15, units = "pt"),
-        legend.spacing = unit(4,units="pt"))
+        legend.title = element_text(size=14),
+        legend.text = element_text(size=10),
+        legend.key.size = unit(12, units = "pt"),
+        legend.spacing = unit(2,units="pt"),
+        strip.background = element_rect(fill="white", colour="white"),
+        strip.text = element_text(face="bold"),
+        strip.placement = "outside")
