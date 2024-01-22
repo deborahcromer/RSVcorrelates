@@ -4,3 +4,5 @@ decay_values =  rsv_neuts %>%
   mutate(decay  = lm(norm_neutL~time)$coefficients[2]) %>%
   select(-c("Agegroup","time","neut","neutL","norm_neut","norm_neutL")) %>%
   distinct()
+
+decay_plot = ggplot(decay_values, aes(x=agegp, colour = drug))
