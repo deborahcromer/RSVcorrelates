@@ -2,11 +2,21 @@ library(iaputils)
 library(readxl)
 library(dplyr)
 library(data.table)
+library(stringr)
 library(ggplot2)
 library(ggpubr)
+library(glue)
 
+
+# get the username
+username = str_extract(getwd(),"Users/[A-Za-z0-9. _]+/") %>%
+  str_sub(nchar("Users/")+1, nchar(.)-1)
 
 RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
+shared_rsv_folder = glue("~/../{username}/Library/CloudStorage/OneDrive-SharedLibraries-UNSW/Vaccine Abs and Efficacy - Documents/28_RSV")
+tagged_data_file = glue("{shared_rsv_folder}/List of included vax_mAb studies.csv")
+
+
 antibody_sheet = "Antibodies"
 antibody_range = "A1:P1000"
 ab_eff_sheet = "ab_eff"
