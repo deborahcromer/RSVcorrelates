@@ -1,7 +1,11 @@
-tagged_data = read.csv(tagged_data_file) %>%
+tagged_data = read.csv(tagged_pharma_data_file) %>%
   janitor::clean_names() %>%
-  mutate(tag_list = str_split(tags, "; "),
-         covidence = str_replace(covidence,"#","N"))
+  mutate(
+    tags = janitor::make_clean_names(str_replace(tags,"GSK;","a;GSK;"), sep_in = ";", allow_dupes = T),
+    tags = str_replace_all(str_replace_all(tags,"\\.\\.",";"),"\\.","_"),
+    tags = str_replace_all(tags,"a_gsk", "gsk"),
+    tag_list = str_split(tags, ";"),
+    covidence = str_replace(covidence,"#","N"))
 
 # count how many studies there are
 nstudies = sum(nchar(tagged_data$study)>0)
@@ -12,7 +16,7 @@ tag_list = NULL
 for (r in c(1:nrow(tagged_data))){
   current_tags = tagged_data$tag_list[r][[1]]
   #Only look at tags for studies with an NCT number
-  if ("NCT number" %in% current_tags) {
+  if ("nct_number" %in% current_tags) {
     for (t in current_tags){
       this_tag_ind = which(names(tag_list)==t) 
       # if this tag isnt already in the list
@@ -25,16 +29,25 @@ for (r in c(1:nrow(tagged_data))){
   }
 }
 
-tagged_study_dataframe = tagged_data %>% select(c(1:8))
-for(tag in names(tag_list)) {
+tagged_study_dataframe = tagged_data %>% select(any_of(tag_cols))
+ntagged_cols = ncol(tagged_study_dataframe)
+
+for(tag in names(tag_list)[tag_list_names]) {
   tagged_study_dataframe = cbind(tagged_study_dataframe,str_detect(tagged_study_dataframe$tags, tag))
 }
-names(tagged_study_dataframe)[c(9:ncol(tagged_study_dataframe))] = names(tag_list)
+names(tagged_study_dataframe)[c((ntagged_cols+1):ncol(tagged_study_dataframe))] = names(tag_list)
 tagged_study_dataframe = tagged_study_dataframe %>% 
   janitor::clean_names() %>%
   mutate(any_adult = adults | older_adults | maternal)
+write.csv(tagged_study_dataframe, tagged_data_file_output, row.names=F)
 
-write.csv(tagged_study_dataframe, tagged_data_file_output, row.names=f)
+tagged_study_dataframe_by_tag = tagged_study_dataframe %>%
+  filter(nct_number==T) %>%
+  tidyr::pivot_longer(cols=tolower(names(tag_list)), names_to = "tag") %>%
+  filter(value==T)
+
+ggplot(tagged_study_dataframe_by_tag, aes(y = tag)) +
+  geom_bar() + theme_bw()
 
 library(RColorBrewer)
 myCol = brewer.pal(6, "Pastel2")
