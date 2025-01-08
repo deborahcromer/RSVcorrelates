@@ -25,6 +25,17 @@ for (r in c(1:nrow(tagged_data))){
   }
 }
 
+tagged_study_dataframe = tagged_data %>% select(c(1:8))
+for(tag in names(tag_list)) {
+  tagged_study_dataframe = cbind(tagged_study_dataframe,str_detect(tagged_study_dataframe$tags, tag))
+}
+names(tagged_study_dataframe)[c(9:ncol(tagged_study_dataframe))] = names(tag_list)
+tagged_study_dataframe = tagged_study_dataframe %>% 
+  janitor::clean_names() %>%
+  mutate(any_adult = adults | older_adults | maternal)
+
+write.csv(tagged_study_dataframe, tagged_data_file_output, row.names=f)
+
 library(RColorBrewer)
 myCol = brewer.pal(6, "Pastel2")
 names(myCol) = c("adults","older adults","infants/children","maternal","immunogenicity","efficacy/effectiveness")
