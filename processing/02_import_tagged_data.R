@@ -32,10 +32,10 @@ for (r in c(1:nrow(tagged_data))){
 tagged_study_dataframe = tagged_data %>% select(any_of(tag_cols))
 ntagged_cols = ncol(tagged_study_dataframe)
 
-for(tag in names(tag_list)[tag_list_names]) {
+for(tag in tag_list_names) {
   tagged_study_dataframe = cbind(tagged_study_dataframe,str_detect(tagged_study_dataframe$tags, tag))
 }
-names(tagged_study_dataframe)[c((ntagged_cols+1):ncol(tagged_study_dataframe))] = names(tag_list)
+names(tagged_study_dataframe)[c((ntagged_cols+1):ncol(tagged_study_dataframe))] = tag_list_names
 tagged_study_dataframe = tagged_study_dataframe %>% 
   janitor::clean_names() %>%
   mutate(any_adult = adults | older_adults | maternal)
@@ -44,11 +44,23 @@ write.csv(tagged_study_dataframe, tagged_data_file_output, row.names=F)
 tagged_study_dataframe_by_tag = tagged_study_dataframe %>%
   filter(nct_number==T) %>%
   tidyr::pivot_longer(cols=tolower(names(tag_list)), names_to = "tag") %>%
+  filter(value==T) %>%
+  mutate(tag_type = get_tag_type(tag))
+
+# write this funciton
+get_tag_type = function(tag){
+  tag_type = names(which(!is.na(sapply(tag_list_groups, FUN = match, x=tag))))
+}
+
+tagged_study_dataframe_grouped = tagged_study_dataframe_by_tag %>%
+  tidyr::pivot_wider()
   filter(value==T)
 
-ggplot(tagged_study_dataframe_by_tag, aes(y = tag)) +
-  geom_bar() + theme_bw()
+ggplot(tagged_study_dataframe_by_tag, aes(y = factor(tag, tag_list_names))) +
+  geom_bar() + 
+  theme_bw()
 
+ggplot()
 library(RColorBrewer)
 myCol = brewer.pal(6, "Pastel2")
 names(myCol) = c("adults","older adults","infants/children","maternal","immunogenicity","efficacy/effectiveness")

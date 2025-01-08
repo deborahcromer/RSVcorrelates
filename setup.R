@@ -27,6 +27,15 @@ tag_list_names = c( "nct_number","immunogenicity","efficacy_effectiveness", "adu
                     "pfizer", "novavax" , "gsk", "astra_zeneca_sanofi", "sanofi", "janssen_pharmaceuticals", "bavarian_nordic", "med_immune",
                     "sanofi_lid_niaid_nih", "sanofi_niaid_nih",  "niaid_nih_med_immune", "nih_niaid_vrc",  "niaid_nih", "niaid", 
                     "pontificia_universidad_catolica_de_chile", "virtuvax", "virometix", "blue_lake_biotechnology_inc")                                                                     
+
+tag_list_groups = list(nct = c("nct_number"),
+                       study_type = c("immunogenicity","efficacy_effectiveness"),
+                       population = c("adults", "older_adults", "maternal", "infants_children"),
+                       product_type = c("vaccine", "immunoprophylaxis", "monoclonal_antibody" , "live_attenuated_chimeric_vaccine", "protein_based_particle_subunit_vaccine", 
+                                        "recombinant_vector_vaccine"),
+                       manufacturer = c("pfizer", "novavax" , "gsk", "astra_zeneca_sanofi", "sanofi", "janssen_pharmaceuticals", "bavarian_nordic", "med_immune",
+                                        "sanofi_lid_niaid_nih", "sanofi_niaid_nih",  "niaid_nih_med_immune", "nih_niaid_vrc",  "niaid_nih", "niaid", 
+                                        "pontificia_universidad_catolica_de_chile", "virtuvax", "virometix", "blue_lake_biotechnology_inc"))
                     
 antibody_sheet = "Antibodies"
 antibody_range = "A1:P1000"
