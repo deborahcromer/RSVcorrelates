@@ -7,7 +7,6 @@ tagged_data = read.csv(tagged_pharma_data_file) %>%
     tag_list = str_split(tags, ";"),
     covidence = str_replace(covidence,"#","N"))
 
-
 # count how many studies there are
 nstudies = sum(nchar(tagged_data$study)>0)
 
