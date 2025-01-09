@@ -15,8 +15,9 @@ username = str_extract(getwd(),"Users/[A-Za-z0-9. _]+/") %>%
 RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
 shared_rsv_folder = glue("~/../{username}/Library/CloudStorage/OneDrive-SharedLibraries-UNSW/Vaccine Abs and Efficacy - Documents/28_RSV")
 tagged_data_file = glue("{shared_rsv_folder}/List of included vax_mAb studies.csv")
-tagged_pharma_data_file = "./raw-data/rsv_studies_tagged_with_pharma_csv_20250108125559.csv"
+tagged_pharma_data_file = "./raw-data/review_487173_included_csv_20250109145251.csv"
 tagged_data_file_output = glue("{shared_rsv_folder}/Editied List of included vax_mAb studies.csv")
+tagged_data_file_grouped_output = glue("{shared_rsv_folder}/Tagged_Grouped_NCT_vax_studies.csv")
 
 tag_cols = c("study","covidence","authors","journal","published_year","doi","accession_number","title","tags")
 
@@ -25,16 +26,17 @@ tag_list_names = c( "nct_number","immunogenicity","efficacy_effectiveness", "adu
                     "vaccine", "immunoprophylaxis", "monoclonal_antibody" , "live_attenuated_chimeric_vaccine", "protein_based_particle_subunit_vaccine", 
                     "recombinant_vector_vaccine",
                     "pfizer", "novavax" , "gsk", "astra_zeneca_sanofi", "sanofi", "janssen_pharmaceuticals", "bavarian_nordic", "med_immune",
-                    "sanofi_lid_niaid_nih", "sanofi_niaid_nih",  "niaid_nih_med_immune", "nih_niaid_vrc",  "niaid_nih", "niaid", 
+                    "sanofi_lid_niaid_nih", "sanofi_niaid_nih","nih" , "niaid_nih_med_immune", "nih_niaid_vrc",  "niaid_nih", "niaid", 
                     "pontificia_universidad_catolica_de_chile", "virtuvax", "virometix", "blue_lake_biotechnology_inc")                                                                     
 
 tag_list_groups = list(nct = c("nct_number"),
                        study_type = c("immunogenicity","efficacy_effectiveness"),
                        population = c("adults", "older_adults", "maternal", "infants_children"),
-                       product_type = c("vaccine", "immunoprophylaxis", "monoclonal_antibody" , "live_attenuated_chimeric_vaccine", "protein_based_particle_subunit_vaccine", 
+                       product_type = c("vaccine", "immunoprophylaxis"),
+                       product_detail = c("monoclonal_antibody" , "live_attenuated_chimeric_vaccine", "protein_based_particle_subunit_vaccine", 
                                         "recombinant_vector_vaccine"),
                        manufacturer = c("pfizer", "novavax" , "gsk", "astra_zeneca_sanofi", "sanofi", "janssen_pharmaceuticals", "bavarian_nordic", "med_immune",
-                                        "sanofi_lid_niaid_nih", "sanofi_niaid_nih",  "niaid_nih_med_immune", "nih_niaid_vrc",  "niaid_nih", "niaid", 
+                                        "sanofi_lid_niaid_nih", "sanofi_niaid_nih", "nih", "niaid_nih_med_immune", "nih_niaid_vrc",  "niaid_nih", "niaid", 
                                         "pontificia_universidad_catolica_de_chile", "virtuvax", "virometix", "blue_lake_biotechnology_inc"))
                     
 antibody_sheet = "Antibodies"

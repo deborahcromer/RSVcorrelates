@@ -44,186 +44,30 @@ write.csv(tagged_study_dataframe, tagged_data_file_output, row.names=F)
 tagged_study_dataframe_by_tag = tagged_study_dataframe %>%
   filter(nct_number==T) %>%
   tidyr::pivot_longer(cols=tolower(names(tag_list)), names_to = "tag") %>%
-  filter(value==T) %>%
-  mutate(tag_type = get_tag_type(tag))
+  filter(value==T) %>% 
+  mutate(#tag = factor(tag, tag_list_names),
+         tag_type_dummy = !is.na(sapply(tag_list_groups, FUN = match, x=tag)),
+         tag_type = NA)
 
-# write this funciton
-get_tag_type = function(tag){
-  tag_type = names(which(!is.na(sapply(tag_list_groups, FUN = match, x=tag))))
+for (r in c(1:nrow(tagged_study_dataframe_by_tag))){
+  tagged_study_dataframe_by_tag$tag_type[r] = names(tag_list_groups)[tagged_study_dataframe_by_tag$tag_type_dummy[r,]]
 }
+tagged_study_dataframe_by_tag = tagged_study_dataframe_by_tag %>%
+  select(-c("tag_type_dummy", "value"))
 
 tagged_study_dataframe_grouped = tagged_study_dataframe_by_tag %>%
-  tidyr::pivot_wider()
-  filter(value==T)
+   tidyr::pivot_wider(names_from = "tag_type", values_from = tag)
 
-ggplot(tagged_study_dataframe_by_tag, aes(y = factor(tag, tag_list_names))) +
+write.csv(tagged_study_dataframe_grouped, tagged_data_file_grouped_output, row.names=F)
+
+
+ggplot(tagged_study_dataframe_by_tag, aes(y = tag, fill = tag_type)) +
   geom_bar() + 
   theme_bw()
 
+
 ggplot()
-library(RColorBrewer)
-myCol = brewer.pal(6, "Pastel2")
-names(myCol) = c("adults","older adults","infants/children","maternal","immunogenicity","efficacy/effectiveness")
-
-use_tags = c("adults","older adults","infants/children")
-
-VennDiagram::venn.diagram(tag_list[use_tags], filename = glue("{shared_rsv_folder}/Venn_adults_children.png"),
-                          disable.logging = TRUE,
-                          #output=FALSE,
-                          # Output features
-                          imagetype="png" ,
-                          height = 1000 , 
-                          width = 1000 , 
-                          resolution = 600,
-                          compression = "lzw",
-                          
-                          #Title
-                          main = "All Studies\n(excl maternal)",
-                          main.cex = .6,
-                          main.fontface = "bold",
-                          main.fontfamily = "sans",
-                        
-                          # Circles
-                          lwd = 2,
-                          lty = 'blank',
-                          fill = myCol[use_tags],
-                          
-                          # Numbers
-                          cex = .5,
-                          fontface = "bold",
-                          fontfamily = "sans",
-                          
-                          # Set names
-                          cat.cex = 0.6,
-                          cat.fontface = "bold",
-                          cat.default.pos = "outer",
-                          cat.pos = c(180, -10, 10),
-                          cat.dist = c(.05, .05, .05),
-                          cat.fontfamily = "sans",
-                          rotation = 1, 
-                          margin = 0)
-
-use_tags = c("adults","maternal","infants/children")
-VennDiagram::venn.diagram(tag_list[use_tags], filename = glue("{shared_rsv_folder}/Venn_maternal_children.png"),
-                          disable.logging = TRUE,
-                         # Output features
-                          imagetype="png" ,
-                          height = 1000 , 
-                          width = 1000 , 
-                          resolution = 600,
-                          compression = "lzw",
-                          
-                         #Title
-                         main = "Studies\n(excl Older Adults)",
-                         main.cex = .6,
-                         main.fontface = "bold",
-                         main.fontfamily = "sans",
-                         
-                          # Circles
-                          lwd = 2,
-                          lty = 'blank',
-                          fill = myCol[use_tags],
-                          
-                          # Numbers
-                          cex = .5,
-                          fontface = "bold",
-                          fontfamily = "sans",
-                          
-                          # Set names
-                          cat.cex = 0.6,
-                          cat.fontface = "bold",
-                          cat.default.pos = "outer",
-                          cat.pos = c(180, 0, 200),
-                          cat.dist = c(.02, .02, 0.02),
-                          cat.fontfamily = "sans",
-                          rotation = 1, 
-                          margin = 0)
-
-# Only consider child tags
-child_studies = unique(c(tag_list[["infants/children"]]))
-child_tag_list = NULL
-for(t in names(tag_list)){
-  child_tag_list[[t]] = tag_list[[t]][tag_list[[t]] %in% child_studies]
-}
-
-use_tags = c("efficacy/effectiveness","immunogenicity","maternal")
-VennDiagram::venn.diagram(child_tag_list[use_tags], filename = glue("{shared_rsv_folder}/Venn_children_eff_imm.png"),
-                          disable.logging = TRUE,
-                          
-                          # Output features
-                          imagetype="png" ,
-                          height = 1000 , 
-                          width = 1000 , 
-                          resolution = 600,
-                          compression = "lzw",
-                          
-                          #Title
-                          main = "Child studies",
-                          main.cex = .6,
-                          main.fontface = "bold",
-                          main.fontfamily = "sans",
-                          
-                          # Circles
-                          lwd = 2,
-                          lty = 'blank',
-                          fill = myCol[use_tags],
-                          
-                          # Numbers
-                          cex = .5,
-                          fontface = "bold",
-                          fontfamily = "sans",
-                          
-                          # Set names
-                          cat.cex = 0.5,
-                          cat.fontface = "bold",
-                          cat.default.pos = "outer",
-                          cat.pos = c(0, 155, 0),
-                          cat.dist = c(.05, 0.02, -.22),
-                          cat.fontfamily = "sans",
-                          rotation = 1, 
-                          margin =0)
-
-# Only consider adult tags
-adult_studies = unique(c(tag_list[["maternal"]],tag_list[["older adults"]],tag_list[["adults"]]))
-adult_tag_list = NULL
-for(t in names(tag_list)){
-  adult_tag_list[[t]] = tag_list[[t]][tag_list[[t]] %in% adult_studies]
-}
-use_tags = c("efficacy/effectiveness","immunogenicity","older adults")
-
-VennDiagram::venn.diagram(adult_tag_list[use_tags], filename = glue("{shared_rsv_folder}/Venn_adults_eff_imm.png"),
-                          disable.logging = TRUE,
-                          main = "Adult studies",
-                          main.cex = .6,
-                          main.fontface = "bold",
-                          main.fontfamily = "sans",
-                          # Output features
-                          imagetype="png" ,
-                          height = 1000 , 
-                          width = 1000 , 
-                          resolution = 600,
-                          compression = "lzw",
-                          
-                          # Circles
-                          lwd = 2,
-                          lty = 'blank',
-                          fill = myCol[use_tags],
-                          
-                          # Numbers
-                          cex = .5,
-                          fontface = "bold",
-                          fontfamily = "sans",
-                          
-                          # Set names
-                          cat.cex = 0.5,
-                          cat.fontface = "bold",
-                          cat.default.pos = "outer",
-                          cat.pos = c(-10, 140, 180),
-                          cat.dist = c(.05, 0.05, .05),
-                          cat.fontfamily = "sans",
-                          rotation = 1, 
-                          margin = .1)
-
+  
 
 
 
