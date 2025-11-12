@@ -1,9 +1,7 @@
 library(iaputils)
 library(readxl)
-library(dplyr)
+library(tidyverse)
 library(data.table)
-library(stringr)
-library(ggplot2)
 library(ggpubr)
 library(glue)
 
@@ -13,9 +11,9 @@ username = str_extract(getwd(),"Users/[A-Za-z0-9. _]+/") %>%
   str_sub(nchar("Users/")+1, nchar(.)-1)
 
 RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
-shared_rsv_folder = glue("~/../{username}/Library/CloudStorage/OneDrive-SharedLibraries-UNSW/Vaccine Abs and Efficacy - Documents/28_RSV")
+shared_rsv_folder = glue("~/../{username}/Library/CloudStorage/OneDrive-UNSW/Vaccine Abs and Efficacy - Documents/28_RSV")
 tagged_data_file = glue("{shared_rsv_folder}/List of included vax_mAb studies.csv")
-tagged_pharma_data_file = "./raw-data/review_487173_included_csv_20250109145251.csv"
+tagged_pharma_data_file = "./raw-data/review_487173_included_csv_20251111132356.csv"
 tagged_data_file_output = glue("{shared_rsv_folder}/Editied List of included vax_mAb studies.csv")
 tagged_data_file_grouped_output = glue("{shared_rsv_folder}/Tagged_Grouped_NCT_vax_studies.csv")
 
