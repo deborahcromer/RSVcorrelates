@@ -10,14 +10,6 @@ tagged_data_import = read.csv(tagged_pharma_data_file) #%>%
 # count how many studies there are
 nstudies = sum(nchar(tagged_data_import$Study)>0)
 
-tagged_data = tagged_data_import[c(1:nstudies),] %>%
-  rowwise() %>%
-  mutate(Tags = add_tags(Tags),
-         is_nct = is_nct(Tags))
-%>%
-  filter(is_nct)
-all_tags = unique(unlist(c(tagged_data$tag_list)))
-
 is_nct = function(tags){
   str_detect(tags,"NCT number") & !str_detect(tags,"No NCT number")
 }
@@ -54,3 +46,11 @@ add_tags = function(tags){
   }
   tags
 }
+
+tagged_data = tagged_data_import[c(1:nstudies),] %>%
+  rowwise() %>%
+  mutate(Tags = add_tags(Tags),
+         is_nct = is_nct(Tags)) %>%
+  filter(is_nct)
+write.csv(tagged_data, glue("{output_dir}{tagged_pharma_data_file_name}_edited.csv"))
+#all_tags = unique(unlist(c(tagged_data$tag_list)))
