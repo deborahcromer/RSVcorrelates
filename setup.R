@@ -17,7 +17,10 @@ tagged_pharma_data_file_name = "review_487173_included_csv_20251111132356"
 tagged_pharma_data_file = glue("./raw-data/{tagged_pharma_data_file_name}.csv")
 tagged_data_file_output = glue("{shared_rsv_folder}/Editied List of included vax_mAb studies.csv")
 tagged_data_file_grouped_output = glue("{shared_rsv_folder}/Tagged_Grouped_NCT_vax_studies.csv")
-output_dir = "./output/"
+output_dir = "output/"
+edited_tagged_file = glue("{output_dir}{tagged_pharma_data_file_name}_edited.csv")
+attribute_hierarchy_file = glue("raw-data/RSV_attribute_hierarchy.xlsx")
+
 tag_cols = c("study","covidence","authors","journal","published_year","doi","accession_number","title","tags")
 
 
