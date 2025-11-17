@@ -1,4 +1,9 @@
-tagged_data_import = read.csv(tagged_pharma_data_file) #%>%
+if(grepl("csv$",tagged_pharma_data_file)) {
+  tagged_data_import = read.csv(tagged_pharma_data_file) 
+} else if (grepl("xlsx$",tagged_pharma_data_file)) {
+  tagged_data_import = read_xlsx(tagged_pharma_data_file) 
+}
+    #%>%
   # janitor::clean_names() %>%
   # mutate(
   #   tags = janitor::make_clean_names(str_replace(tags,"GSK;","a;GSK;"), sep_in = ";", allow_dupes = T),
@@ -17,7 +22,7 @@ write_csv(data.frame(), "added_tags.csv", append=F)
 
 add_tags = function(tags){
   #browser()
-  if (str_detect(tags,"infants") | str_detect(tags, "under")){
+  if (str_detect(tags,"infants") | str_detect(tags, "under") | str_detect(tags, "year")){
     if(str_detect(tags,"immunogenicity")) {
       tags = paste0(tags,"; 1_infants_immunogenicity")
     }
@@ -49,13 +54,18 @@ add_tags = function(tags){
   
   # Now add the product type and manufacturer tag
   product_information_tags = c("monoclonal antibody","live-attenuated","protein subunit","viral vector","combination vaccine","mRNA","virus-like particles","protein based particle/subunit vaccine","recombinant vector vaccine","chimeric vaccine","formalin inactivated vaccine","nucleic acid vaccine","formalin inactivated")
-  manufacturer_tags = c("Pfizer","Novavax","GSK","AstraZeneca-Sanofi","Moderna","Janssen","Bavarian Nordic","MedImmune","Sanofi","AstraZeneca","Merck","Sanofi/LID/NIAID/NIH","Sanofi/NIAID/NIH","NIH","NIAID/NIH/MedImmune","NIH/NIAID/VRC","NIAID/NIH","NIAID","Pontificia Universidad Católica de Chile","Virtuvax","Virometix","Blue Lake Biotechnology Inc","Intravacc","Lederle Praxis Biologicals","NIH/Wyeth Vaccines","Praxis Biologics","Wyeth-Lederle Vaccine and Pediatrics","IDT Biologika","Mucosis")
+  names(product_information_tags) = product_information_tags
+  #retired_tags = c("protein based particle/subunit vaccine","recombinant vector vaccine","chimeric vaccine","nucleic acid vaccine")
+  #names(product_information_tags[product_information_tags %in% retired_tags]) = c("protein subunit", "viral vector", "other", "mRNA")
+  #product_tag_matches = names(product_information_tags)[str_detect(tags, product_information_tags)]
   product_tag_matches = product_information_tags[str_detect(tags, product_information_tags)]
   product_tag = if (length(product_tag_matches) > 0) product_tag_matches[which.max(nchar(product_tag_matches))] else NA
   
+  manufacturer_tags = c("Pfizer","Novavax","GSK","AstraZeneca-Sanofi","Moderna","Janssen","Bavarian Nordic","MedImmune","Sanofi","AstraZeneca","Merck","Sanofi/LID/NIAID/NIH","Sanofi/NIAID/NIH","NIH","NIAID/NIH/MedImmune","NIH/NIAID/VRC","NIAID/NIH","NIAID","Pontificia Universidad Católica de Chile","Virtuvax","Virometix","Blue Lake Biotechnology Inc","Intravacc","Lederle Praxis Biologicals","NIH/Wyeth Vaccines","Praxis Biologics","Wyeth-Lederle Vaccine and Pediatrics","IDT Biologika","Mucosis")
   manufacturer_tag_matches = manufacturer_tags[str_detect(tags, manufacturer_tags)]
   manufacturer_tag = if (length(manufacturer_tag_matches) > 0) manufacturer_tag_matches[which.max(nchar(manufacturer_tag_matches))] else NA
   added_tag = glue("{product_tag}:{manufacturer_tag}")
+  
   #write_csv(data.frame(added_tag), "added_tags.csv", append=T)
   #added_tags = c(added_tags, added_tag)
   tags = paste0(tags,"; ",added_tag)
@@ -68,6 +78,12 @@ add_tags = function(tags){
   added_tag = glue("{nct_tag}:{rct_tag}")
   write_csv(data.frame(added_tag), "added_tags.csv", append=T)
   tags = paste0(tags,"; ",added_tag)
+  
+  # Now add the approval tag
+  if(grepl(nct_types[1],tags)) {
+    tags = paste0(tags,"; ","approval unknown") 
+  }
+  tags
 }
 
 tagged_data = tagged_data_import[c(1:nstudies),] %>%
