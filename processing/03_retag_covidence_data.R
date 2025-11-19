@@ -21,35 +21,44 @@ is_nct = function(tags){
 write_csv(data.frame(), "added_tags.csv", append=F)
 write_csv(data.frame("added_tag"), "added_tags.csv", append=T)
 
-add_tags = function(tags){
+add_tags = function(tags, cov_no = ""){
   #browser()
-  if (str_detect(tags,"infants") | str_detect(tags, "under") | str_detect(tags, "year")){
-    if(str_detect(tags,"immunogenicity")) {
-      tags = paste0(tags,"; 1_infants_immunogenicity")
+  # need to fix deussart vax 24
+  if (cov_no == "#279"){
+    tags = paste0(tags,"; 1_infants_efficacy; 2_maternal_active_immunogenicity")
+  } else {
+    if (str_detect(tags,"infants") | str_detect(tags, "under") | str_detect(tags, "year")){
+      if(str_detect(tags,"immunogenicity")) {
+        tags = paste0(tags,"; 1_infants_passive_immunogenicity")
+      }
+      if(str_detect(tags,"efficacy")) {
+        tags = paste0(tags,"; 1_infants_efficacy")
+      }
     }
-    if(str_detect(tags,"efficacy")) {
-      tags = paste0(tags,"; 1_infants_efficacy")
+    if (str_detect(tags,"maternal")){
+      if(str_detect(tags,"immunogenicity")) {
+        tags = paste0(tags,"; 2_maternal_active_immunogenicity")
+      }
     }
-  }
-  if (str_detect(tags,"maternal")){
-    if(str_detect(tags,"immunogenicity")) {
-      tags = paste0(tags,"; 2_maternal_immunogenicity")
+    if (str_detect(tags,"general adults") |str_detect(tags,"; adults")){
+      if(str_detect(tags,"immunogenicity")) {
+        if(str_detect(tags, "monoclonal")) {
+          tags = paste0(tags,"; 3_general_adults_passive_immunogenicity")
+        } else {
+          tags = paste0(tags,"; 3_general_adults_active_immunogenicity")
+        }
+      }
+      if(str_detect(tags,"efficacy")) {
+        tags = paste0(tags,"; 3_general_adults_efficacy")
+      }
     }
-  }
-  if (str_detect(tags,"general adults") |str_detect(tags,"; adults")){
-    if(str_detect(tags,"immunogenicity")) {
-      tags = paste0(tags,"; 3_general_adults_immunogenicity")
-    }
-    if(str_detect(tags,"efficacy")) {
-      tags = paste0(tags,"; 3_general_adults_efficacy")
-    }
-  }
-  if (str_detect(tags,"older adults")){
-    if(str_detect(tags,"immunogenicity")) {
-      tags = paste0(tags,"; 4_older_adults_immunogenicity")
-    }
-    if(str_detect(tags,"efficacy")) {
-      tags = paste0(tags,"; 4_older_adults_efficacy")
+    if (str_detect(tags,"older adults")){
+      if(str_detect(tags,"immunogenicity")) {
+        tags = paste0(tags,"; 4_older_adults_active_immunogenicity")
+      }
+      if(str_detect(tags,"efficacy")) {
+        tags = paste0(tags,"; 4_older_adults_efficacy")
+      }
     }
   }
   
@@ -94,7 +103,8 @@ add_tags = function(tags){
 
 tagged_data = tagged_data_import[c(1:nstudies),] %>%
   rowwise() %>%
-  mutate(Tags = add_tags(Tags),
+  rename(covidence_no = `Covidence #`) %>%
+  mutate(Tags = add_tags(Tags, covidence_no),
          is_nct = is_nct(Tags)) %>%
   #filter(is_nct) %>%
   select(-is_nct)
