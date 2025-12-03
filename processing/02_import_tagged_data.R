@@ -1,11 +1,17 @@
-tagged_data = read.csv(tagged_pharma_data_file) %>%
+if(grepl("csv$",tagged_pharma_data_file)) {
+  tagged_data_import = read.csv(tagged_pharma_data_file) 
+} else if (grepl("xlsx$",tagged_pharma_data_file)) {
+  tagged_data_import = read_xlsx(tagged_pharma_data_file) 
+}
+
+tagged_data = tagged_data_import %>%
   janitor::clean_names() %>%
   mutate(
     tags = janitor::make_clean_names(str_replace(tags,"GSK;","a;GSK;"), sep_in = ";", allow_dupes = T),
     tags = str_replace_all(str_replace_all(tags,"\\.\\.",";"),"\\.","_"),
     tags = str_replace_all(tags,"a_gsk", "gsk"),
     tag_list = str_split(tags, ";"),
-    covidence = str_replace(covidence,"#","N"))
+    covidence = str_replace(covidence_number,"#","N"))
 
 # count how many studies there are
 nstudies = sum(nchar(tagged_data$study)>0)
@@ -29,7 +35,7 @@ for (r in c(1:nrow(tagged_data))){
   }
 }
 
-tagged_study_dataframe = tagged_data %>% select(any_of(tag_cols))
+tagged_study_dataframe = tagged_data %>% janitor::clean_names() %>% select(any_of(tag_cols))
 ntagged_cols = ncol(tagged_study_dataframe)
 
 for(tag in tag_list_names) {

@@ -21,13 +21,13 @@ tagged_data_file = glue("{shared_rsv_folder}/List of included vax_mAb studies.cs
 # tagged_pharma_data_file_name = "Export_of_ALL_Included_studies_approve_tags.xlsx"
 # tagged_pharma_data_file = glue("./raw-data/{tagged_pharma_data_file_name}")
 
-tagged_pharma_data_file_name = "Export_of_Included_studies_20251202.xlsx"
+tagged_pharma_data_file_name = "Export_of_Included_studies_20251203.xlsx"
 tagged_pharma_data_file_name_noext = sub("\\.[a-z]*$", "", tagged_pharma_data_file_name)
 tagged_pharma_data_file = glue("{shared_rsv_folder}/Artificial_Antibodies/01_Systematic_Review/04_Summaries/{tagged_pharma_data_file_name}")
 edited_tagged_file = glue("{output_dir}{tagged_pharma_data_file_name_noext}_edited.csv")
 
 
-tagged_data_file_output = glue("{shared_rsv_folder}/Editied List of included vax_mAb studies.csv")
+tagged_data_file_output = glue("{shared_rsv_folder}/{tagged_pharma_data_file_name_noext}_split_by_tag.csv")
 tagged_data_file_grouped_output = glue("{shared_rsv_folder}/Tagged_Grouped_NCT_vax_studies.csv")
 attribute_hierarchy_file = glue("raw-data/RSV_attribute_hierarchy_Dec.xlsx")
 
