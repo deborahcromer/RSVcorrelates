@@ -11,19 +11,25 @@ username = str_extract(getwd(),"Users/[A-Za-z0-9. _]+/") %>%
   str_sub(nchar("Users/")+1, nchar(.)-1)
 
 RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
+output_dir = "output/"
+
 shared_rsv_folder = glue("~/../{username}/Library/CloudStorage/OneDrive-UNSW/Vaccine Abs and Efficacy - Documents/28_RSV")
 tagged_data_file = glue("{shared_rsv_folder}/List of included vax_mAb studies.csv")
 
-tagged_pharma_data_file_name = "review_487173_included_csv_20251111132356.csv"
-tagged_pharma_data_file_name = "grouped list of tags_approve_tags.xlsx"
-tagged_pharma_data_file_name = "Export_of_ALL_Included_studies_approve_tags.xlsx"
-tagged_pharma_data_file = glue("./raw-data/{tagged_pharma_data_file_name}")
+# tagged_pharma_data_file_name = "review_487173_included_csv_20251111132356.csv"
+# tagged_pharma_data_file_name = "grouped list of tags_approve_tags.xlsx"
+# tagged_pharma_data_file_name = "Export_of_ALL_Included_studies_approve_tags.xlsx"
+# tagged_pharma_data_file = glue("./raw-data/{tagged_pharma_data_file_name}")
+
+tagged_pharma_data_file_name = "Export_of_Included_studies_20251202.xlsx"
+tagged_pharma_data_file_name_noext = sub("\\.[a-z]*$", "", tagged_pharma_data_file_name)
+tagged_pharma_data_file = glue("{shared_rsv_folder}/Artificial_Antibodies/01_Systematic_Review/04_Summaries/{tagged_pharma_data_file_name}")
+edited_tagged_file = glue("{output_dir}{tagged_pharma_data_file_name_noext}_edited.csv")
+
 
 tagged_data_file_output = glue("{shared_rsv_folder}/Editied List of included vax_mAb studies.csv")
 tagged_data_file_grouped_output = glue("{shared_rsv_folder}/Tagged_Grouped_NCT_vax_studies.csv")
-output_dir = "output/"
-edited_tagged_file = glue("{output_dir}{tagged_pharma_data_file_name}_edited.csv")
-attribute_hierarchy_file = glue("raw-data/RSV_attribute_hierarchy.xlsx")
+attribute_hierarchy_file = glue("raw-data/RSV_attribute_hierarchy_Dec.xlsx")
 
 tag_cols = c("study","covidence","authors","journal","published_year","doi","accession_number","title","tags")
 
