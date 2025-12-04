@@ -48,39 +48,41 @@ for(tag in sort(names(tag_list))) {
 names(tagged_study_dataframe)[c((ntagged_cols+1):ncol(tagged_study_dataframe))] = sort(names(tag_list))
 tagged_study_dataframe = tagged_study_dataframe %>% 
   janitor::clean_names() %>%
-  mutate(any_adult = adults | older_adults | maternal)
+  mutate(any_adult = if_any(c(any_of(c("adults", "older_adults", "maternal"))), ~ . == TRUE))
 
 tagged_study_dataframe_for_output = tagged_study_dataframe %>%
-  select("study","covidence",any_of(c(starts_with("1"), starts_with("2"), starts_with("3"), starts_with("4"), contains("approved"), contains("nct"))))
+  select("study","covidence","passive_immunogenicity","active_immunogenicity","efficacy", "nct_number","no_nct_number",any_of(c(starts_with("1"), starts_with("2"), starts_with("3"), starts_with("4"), contains("approved"))))
 
 write.csv(tagged_study_dataframe_for_output, tagged_data_file_output, row.names=F)
 
-tagged_study_dataframe_by_tag = tagged_study_dataframe %>%
-  tidyr::pivot_longer(cols=tolower(names(tag_list)), names_to = "tag") %>%
-  filter(value==T) %>% 
-  mutate(#tag = factor(tag, tag_list_names),
-         tag_type_dummy = !is.na(sapply(tag_list_groups, FUN = match, x=tag)),
-         tag_type = NA)
-
-for (r in c(1:nrow(tagged_study_dataframe_by_tag))){
-  tagged_study_dataframe_by_tag$tag_type[r] = names(tag_list_groups)[tagged_study_dataframe_by_tag$tag_type_dummy[r,]]
-}
-tagged_study_dataframe_by_tag = tagged_study_dataframe_by_tag %>%
-  select(-c("tag_type_dummy", "value"))
-
-tagged_study_dataframe_grouped = tagged_study_dataframe_by_tag %>%
-   tidyr::pivot_wider(names_from = "tag_type", values_from = tag)
-
-write.csv(tagged_study_dataframe_grouped_for_output, tagged_data_file_grouped_output, row.names=F)
-
-
-ggplot(tagged_study_dataframe_by_tag, aes(y = tag, fill = tag_type)) +
-  geom_bar() + 
-  theme_bw()
-
-
-ggplot()
+do_grouped_tagging = F
+if (do_grouped_tagging){
+  tagged_study_dataframe_by_tag = tagged_study_dataframe %>%
+    tidyr::pivot_longer(cols=tolower(names(tag_list)), names_to = "tag") %>%
+    filter(value==T) %>% 
+    mutate(#tag = factor(tag, tag_list_names),
+           tag_type_dummy = !is.na(sapply(tag_list_groups, FUN = match, x=tag)),
+           tag_type = NA)
   
-
-
-
+  for (r in c(1:nrow(tagged_study_dataframe_by_tag))){
+    tagged_study_dataframe_by_tag$tag_type[r] = names(tag_list_groups)[tagged_study_dataframe_by_tag$tag_type_dummy[r,]]
+  }
+  tagged_study_dataframe_by_tag = tagged_study_dataframe_by_tag %>%
+    select(-c("tag_type_dummy", "value"))
+  
+  tagged_study_dataframe_grouped = tagged_study_dataframe_by_tag %>%
+     tidyr::pivot_wider(names_from = "tag_type", values_from = tag)
+  
+  write.csv(tagged_study_dataframe_grouped_for_output, tagged_data_file_grouped_output, row.names=F)
+  
+  
+  ggplot(tagged_study_dataframe_by_tag, aes(y = tag, fill = tag_type)) +
+    geom_bar() + 
+    theme_bw()
+  
+  
+  ggplot()
+}    
+  
+  
+  

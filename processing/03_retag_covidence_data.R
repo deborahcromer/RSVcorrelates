@@ -1,8 +1,17 @@
 if(grepl("csv$",tagged_pharma_data_file)) {
-  tagged_data_import = read.csv(tagged_pharma_data_file) 
+  basic_tagged_data_import = read.csv(tagged_pharma_data_file) 
 } else if (grepl("xlsx$",tagged_pharma_data_file)) {
-  tagged_data_import = read_xlsx(tagged_pharma_data_file) 
+  basic_tagged_data_import = read_xlsx(tagged_pharma_data_file) 
 }
+
+if(grepl("csv$",tagged_pharma_extra_data_file)) {
+  extra_tagged_data_import = read.csv(tagged_pharma_extra_data_file) 
+} else if (grepl("xlsx$",tagged_pharma_extra_data_file_name)) {
+  extra_tagged_data_import = read_xlsx(tagged_pharma_extra_data_file) 
+}
+
+tagged_data_import = bind_rows(basic_tagged_data_import, extra_tagged_data_import)
+
 #%>%
   # janitor::clean_names() %>%
   # mutate(
@@ -26,12 +35,11 @@ add_tags = function(tags, author="", year="", cov_no=""){
   print(glue("Paper:{cov_no}: {author}, ({year})"))
   #browser()
   # need to fix deussart vax 24 - dont add infant efficacy tag for dieussart 2024
-  if ((cov_no == "#279") | (author == "Dieussaert" & year == 2024)){
-    tags = paste0(tags,"; 1_infants_efficacy; 2_maternal_active_immunogenicity")
-  } else if ((cov_no == "#1157") | (author == "Simões" & year == 2022)) { # dont add maternal efficacy tag for simoes 2024
+  if (!anyNA(c(cov_no, author, year)) && (cov_no == "#279" || (author == "Dieussaert" && as.character(year) == "2024"))){
+      tags = paste0(tags,"; 1_infants_efficacy; 2_maternal_active_immunogenicity")
+  } else if (!anyNA(c(cov_no, author, year)) && (cov_no == "#1157" || (author == "Simões" && as.character(year) == "2022"))) { # dont add maternal efficacy tag for simoes 2024
     tags = paste0(tags,"; 1_infants_passive_immunogenicity; 1_infants_efficacy; 2_maternal_active_immunogenicity")
-  }
-  else {
+  } else {
     if (str_detect(tags,"infants") | str_detect(tags, "under") | str_detect(tags, "year")){
       if(str_detect(tags,"immunogenicity") & !str_detect(tags,"GSK")) { # not GSV vaccine
         tags = paste0(tags,"; 1_infants_passive_immunogenicity")
@@ -72,6 +80,16 @@ add_tags = function(tags, author="", year="", cov_no=""){
     }
   }
   
+  if(str_detect(tags,"active_immunogenicity")) {
+    tags = paste0(tags,"; active_immunogenicity")
+  }
+  if(str_detect(tags,"passive_immunogenicity")) {
+    tags = paste0(tags,"; passive_immunogenicity")
+  }
+  if(str_detect(tags,"efficacy")) {
+    tags = paste0(tags,"; efficacy")
+  }
+
   # Now add the product type and manufacturer tag
   product_information_tags = c("monoclonal antibody","live-attenuated","protein subunit","viral vector","combination vaccine","mRNA","virus-like particles","protein based particle/subunit vaccine","recombinant vector vaccine","chimeric vaccine","formalin inactivated vaccine","nucleic acid vaccine","formalin inactivated")
   names(product_information_tags) = product_information_tags

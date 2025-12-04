@@ -21,9 +21,11 @@ summaries_folder = glue("{shared_rsv_folder}/Artificial_Antibodies/01_Systematic
 # tagged_pharma_data_file = glue("./raw-data/{tagged_pharma_data_file_name}")
 
 tagged_pharma_data_file_name = "Export_of_Included_studies_20251203.xlsx"
+tagged_pharma_extra_data_file_name = "Export of Included studies from ongoing review.xlsx"
 tagged_pharma_data_file_name_noext = sub("\\.[a-z]*$", "", tagged_pharma_data_file_name)
 
 tagged_pharma_data_file = glue("{summaries_folder}/{tagged_pharma_data_file_name}")
+tagged_pharma_extra_data_file = glue("{summaries_folder}/{tagged_pharma_extra_data_file_name}")
 edited_tagged_file = glue("{output_dir}{tagged_pharma_data_file_name_noext}_edited.csv")
 
 

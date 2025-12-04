@@ -118,3 +118,14 @@ mRNA:approved
 live-attenuated:not approved
 live-attenuated:not approved
 live-attenuated:not approved
+monoclonal antibody:approved
+protein subunit:not approved
+viral vector:not approved
+mRNA:approved
+monoclonal antibody:approved
+monoclonal antibody:approved
+protein subunit:approved
+protein subunit:approved
+protein subunit:approved
+protein subunit:not approved
+protein subunit:approved
