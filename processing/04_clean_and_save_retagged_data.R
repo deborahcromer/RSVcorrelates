@@ -45,7 +45,9 @@ retagged_data_cleaned = retagged_data_cleaned %>%
   mutate(any_adult = if_any(c(any_of(c("adults", "older_adults", "maternal"))), ~ . == TRUE))
 
 tagged_study_dataframe_for_output = retagged_data_cleaned %>%
-  select("study","covidence","passive_immunogenicity","active_immunogenicity","efficacy", "nct_number","no_nct_number",any_of(c(starts_with("1"), starts_with("2"), starts_with("3"), starts_with("4"), contains("approved"), contains("2000"))))
+  select("study","covidence","passive_immunogenicity","active_immunogenicity","efficacy", "nct_number","no_nct_number",
+  any_of(c(starts_with("1"), starts_with("2"), starts_with("3"), starts_with("4"), 
+  contains("approved"), contains("20"))))
 
 write.csv(tagged_study_dataframe_for_output, tagged_data_file_output_split_by_tag, row.names=F)
 

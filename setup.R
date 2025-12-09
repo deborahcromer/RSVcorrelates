@@ -12,7 +12,7 @@ username = str_extract(getwd(),"Users/[A-Za-z0-9. _]+/") %>%
 source("./R/01_tagging_helper_functions.R")
 
 RSV_data_file = "./raw-data/RSV Data 2024.xlsx"
-output_dir = "output/"
+output_dir = "./output"
 
 shared_rsv_folder = glue("~/../{username}/Library/CloudStorage/OneDrive-UNSW/Vaccine Abs and Efficacy - Documents/28_RSV")
 tagged_data_file = glue("{shared_rsv_folder}/List of included vax_mAb studies.csv")
@@ -28,10 +28,9 @@ tagged_pharma_data_file_name_noext = sub("\\.[a-z]*$", "", tagged_pharma_data_fi
 
 tagged_pharma_data_file = glue("{summaries_folder}/{tagged_pharma_data_file_name}")
 tagged_pharma_extra_data_file = glue("{summaries_folder}/{tagged_pharma_extra_data_file_name}")
-edited_tagged_file = glue("{output_dir}{tagged_pharma_data_file_name_noext}_edited.csv")
 
-
-tagged_data_file_output_split_by_tag = glue("{summaries_folder}/{tagged_pharma_data_file_name_noext}_split_by_tag.csv")
+edited_tagged_file = glue("{output_dir}/{tagged_pharma_data_file_name_noext}_edited.csv")
+tagged_data_file_output_split_by_tag = glue("{output_dir}/{tagged_pharma_data_file_name_noext}_split_by_tag.csv")
 tagged_data_file_grouped_output = glue("{summaries_folder}/Tagged_Grouped_NCT_vax_studies.csv")
 attribute_hierarchy_file = glue("raw-data/RSV_attribute_hierarchy_Dec.xlsx")
 
