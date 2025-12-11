@@ -8,13 +8,14 @@ write_csv(data.frame("added_tag"), "added_tags.csv", append=T)
 add_tags = function(tags, author="", year="", cov_no=""){
   print(glue("Paper:{cov_no}: {author}, ({year})"))
   #browser()
-  # need to fix deussart vax 24 - dont add infant efficacy tag for dieussart 2024
+  # need to fix Dieussaert vax 24 - dont add infant efficacy tag for dieussart 2024
   if (!anyNA(c(cov_no, author, year)) && (cov_no == "#279" || (author == "Dieussaert" && as.character(year) == "2024"))){
-    tags = paste0(tags,"; 1_infants_efficacy; 2_maternal_active_immunogenicity")
+    tags = paste0(tags,"; 1_infants_efficacy; 2_maternal_active_immunogenicity; pop_infants_children; pop_maternal")
   } else if (!anyNA(c(cov_no, author, year)) && (cov_no == "#1157" || (author == "Simões" && as.character(year) == "2022"))) { # dont add maternal efficacy tag for simoes 2024
-    tags = paste0(tags,"; 1_infants_passive_immunogenicity; 1_infants_efficacy; 2_maternal_active_immunogenicity")
+    tags = paste0(tags,"; 1_infants_passive_immunogenicity; 1_infants_efficacy; 2_maternal_active_immunogenicity; pop_infants_children; pop_maternal")
   } else {
     if (str_detect(tags,"infants") | str_detect(tags, "under") | str_detect(tags, "year")){
+      tags = paste0(tags,"; pop_infants_children")
       if(str_detect(tags,"immunogenicity") && str_detect(tags,"inf_child_passively_acquired")) { # not GSV vaccine
         tags = paste0(tags,"; 1_infants_passive_immunogenicity")
       } else if (str_detect(tags,"immunogenicity") && str_detect(tags,"inf_child_actively_acquired")) { # GSK vaccine
@@ -25,6 +26,7 @@ add_tags = function(tags, author="", year="", cov_no=""){
       }
     }
     if (str_detect(tags,"maternal")){
+      tags = paste0(tags,"; pop_maternal")
       if(str_detect(tags,"immunogenicity")) {
         tags = paste0(tags,"; 2_maternal_active_immunogenicity")
       }
@@ -33,6 +35,7 @@ add_tags = function(tags, author="", year="", cov_no=""){
       }
     }
     if (str_detect(tags,"general adults") |str_detect(tags,"; adults")){
+      tags = paste0(tags,"; pop_general")
       if(str_detect(tags,"immunogenicity")) {
         if(str_detect(tags, "monoclonal")) {
           tags = paste0(tags,"; 3_general_adults_passive_immunogenicity")
@@ -45,6 +48,7 @@ add_tags = function(tags, author="", year="", cov_no=""){
       }
     }
     if (str_detect(tags,"older adults")){
+      tags = paste0(tags,"; pop_older")
       if(str_detect(tags,"immunogenicity")) {
         tags = paste0(tags,"; 4_older_adults_active_immunogenicity")
       }
