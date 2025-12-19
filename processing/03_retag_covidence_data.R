@@ -16,6 +16,7 @@ retagged_data = tagged_data_import[c(1:nstudies),] %>%
   rowwise() %>%
   mutate(Tags = add_tags(Tags, sub(",.*$", "", Authors), `Published Year`, `Covidence #`),
          is_nct = is_nct(Tags)) %>%
+         author = 
   #filter(is_nct) %>%
   select(-is_nct)
 write.csv(retagged_data, edited_tagged_file, row.names = F)

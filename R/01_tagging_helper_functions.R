@@ -11,7 +11,12 @@ add_tags = function(tags, author="", year="", cov_no=""){
   # need to fix Dieussaert vax 24 - dont add infant efficacy tag for dieussart 2024
   if (!anyNA(c(cov_no, author, year)) && (cov_no == "#279" || (author == "Dieussaert" && as.character(year) == "2024"))){
     tags = paste0(tags,"; 1_infants_efficacy; 2_maternal_active_immunogenicity; pop_infants_children; pop_maternal")
-  } else if (!anyNA(c(cov_no, author, year)) && (cov_no == "#1157" || (author == "Simões" && as.character(year) == "2022"))) { # dont add maternal efficacy tag for simoes 2024
+  } else if ((author == "Munjal") || 
+             (startsWith(author, "Sim") && as.character(year) == "2022") ||
+             (author == "Banooni" && as.character(year) == "2025") ||
+             (startsWith(author, "Sim") && as.character(year) == "2025")){
+                                                   # dont add maternal efficacy tag for simoes 2022/2025, Banooni and Munjal
+    print(glue("No maternal eff"))
     tags = paste0(tags,"; 1_infants_passive_immunogenicity; 1_infants_efficacy; 2_maternal_active_immunogenicity; pop_infants_children; pop_maternal")
   } else {
     if (str_detect(tags,"infants") | str_detect(tags, "under") | str_detect(tags, "year")){
